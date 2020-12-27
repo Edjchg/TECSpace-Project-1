@@ -23,9 +23,9 @@ class rocket_engine:
         self.esfuerzo_ultimo_cortante = 0  # Pa
         self.esfuerzo_ultimo_tension = 0  # Pa
         # Chamber
-        self.chamber_pressure_psi = 0  # psi
+        self.chamber_pressure_psi = 800  # psi
         self.chamber_pressure_pa = 0  # Pa
-        self.chamber_temperature_K = 0  # K
+        self.chamber_temperature_K = 1710  # K
         self.chamber_temperature_C = 0  # C
         # Grain
         self.grain_quantity = 0
@@ -39,6 +39,11 @@ class rocket_engine:
         self.fuel_total_length = 0  # m
         self.port_area = 0  # m**2
         self.fuel_section_length = 0  # m
+        # Fuel data
+        self.const_burn_rate = 0.005
+        self.pressure_e = 0.688
+        self.burn_rate = 0  # m/s
+        self.fuel_density = 0  # kg/m**3
 
     # Constants methods--------------------------------------------- #
     def get_atmospheric_pressure(self):
@@ -147,14 +152,18 @@ class rocket_engine:
 
     def set_chamber_temperature_k(self, chamber_temperature_K):
         self.chamber_temperature_K = chamber_temperature_K
-        self.chamber_temperature_C = chamber_temperature_K - 273.15
+
+    def calc_chamber_temperature_C(self):
+        self.chamber_temperature_C = self.chamber_temperature_K - 273.15
 
     def get_chamber_temperature_C(self):
         return self.chamber_temperature_C
 
     def set_chamber_temperature_C(self, chamber_temperature_C):
         self.chamber_temperature_C = chamber_temperature_C
-        self.chamber_temperature_K = chamber_temperature_C + 273.15
+
+    def calc_chamber_temperature_K(self):
+        self.chamber_temperature_K = self.chamber_temperature_C + 273.15
 
     # End chamber-------------------------------------------------------- #
     # Grain-------------------------------------------------------------- #
@@ -199,7 +208,7 @@ class rocket_engine:
         return self.unit_mass
 
     def calc_unit_mass(self):
-        self.unit_mass = self.unit_volume * 1000  # missing-> * self.fuel_density
+        self.unit_mass = self.unit_volume * 1000 * self.fuel_density
 
     def get_fuel_total_length(self):
         return self.fuel_total_length
@@ -221,3 +230,27 @@ class rocket_engine:
                 self.grain_quantity - 1) + self.grain_length * self.grain_quantity
 
     # End grain---------------------------------------------------------- #
+    # Fuel data---------------------------------------------------------- #
+    def get_const_burn_rate(self):
+        return self.const_burn_rate
+
+    def set_const_burn_rate(self, const_burn_rate):
+        self.const_burn_rate = const_burn_rate
+
+    def get_pressure_e(self):
+        return self.pressure_e
+
+    def set_pressure_e(self, pressure_e):
+        self.pressure_e = pressure_e
+
+    def get_burn_rate(self):
+        return self.burn_rate
+
+    def calc_burn_rate(self):
+        self.burn_rate = (self.const_burn_rate * ((self.chamber_pressure_pa * 0.000145038) ** self.pressure_e)) * 0.0254
+
+    def get_fuel_density(self):
+        return self.fuel_density
+
+    def set_fuel_density(self, fuel_density):
+        self.fuel_density = fuel_density
