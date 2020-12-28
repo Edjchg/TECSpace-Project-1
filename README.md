@@ -11,6 +11,6 @@ $ Recommended: install Pycharm JetBrains as your Python IDE.
 
 $ Install python 3.8+.
 
-& Install PyQt5 for python.
+$ Install PyQt5 for python.
 
 
