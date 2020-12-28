@@ -3,6 +3,7 @@ The goal of this project is to approach Aerospace Engineering from computational
 
 For development:
 $ git clone https://github.com/Edjchg/TECSpace-Project-1/new/master?readme=1 
+
 $ Download and install QT designer
 $ Recommended: install Pycharm JetBrains as your Python IDE.
 $ Install python 3.8+.
