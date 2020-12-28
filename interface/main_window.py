@@ -1,5 +1,6 @@
 # Tutorial: https://www.youtube.com/watch?v=Oy5saLTejtY
 # Tutorial2: https://www.youtube.com/watch?v=DpSerOAZR9w
+# Tutorial3: https://www.youtube.com/watch?v=Vl0Z_0DRs_Q
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -7,30 +8,40 @@ from PyQt5.QtGui import *
 from PyQt5 import uic
 
 
-Form, Window = uic.loadUiType("prueba.ui")
-app = QApplication([])
-window = Window()
-form = Form()
-form.setupUi(window)
-window.show()
-app.exec_()
+class main_window(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi("interface/prueba.ui", self)
+        self.save_data_button.clicked.connect(self.function_save_data_first_tab)
+
+        self.external_diameter_entry.setValidator(QDoubleValidator(99999, -99999, 8))
+        self.wall_thickness_entry.setValidator(QDoubleValidator(99999, -99999, 8))
+
+    def function_save_data_first_tab(self):
+        external_diameter = self.external_diameter_entry.text()
+        wall_thickness = self.wall_thickness_entry.text()
+
+        if external_diameter == "" or wall_thickness == "":
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+            msg.setWindowTitle("Datos faltantes")
+            msg.setInformativeText("Algunos de los campos se encuentran vacíos, todos los datos deben ser rellenados.")
+            msg.exec_()
+        else:
+
+            external_diameter = external_diameter.replace(",", ".", 1)
+            external_diameter = float(external_diameter)
+            wall_thickness = wall_thickness.replace(",", ".", 1)
+            wall_thickness = float(wall_thickness)
+            print("Guardar Datos: ", external_diameter, wall_thickness)
+
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Information)
+            msg.setWindowTitle("Datos guardados correctamente")
+            msg.setInformativeText("Todos los datos de la pestaña 'Constantes' han sido guardados exitosamente.")
+            msg.exec_()
 
 
-'''
-# Instance of the main app, is singleton so just call it once:
-rocket_designer_gui = QApplication([])
 
-# Instance of the main window
-window = QMainWindow()
-window.setFixedSize(700, 500)
-window.setWindowTitle("TECSpace: Rocket engine designer")
 
-label1 = QLabel("Prueba", window)
-label1.setStyleSheet("background:#424242; color:#fff")
 
-# Shows the window
-window.show()
-
-# Start a event cycle, main thread:
-rocket_designer_gui.exec_()
-'''
