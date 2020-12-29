@@ -44,6 +44,16 @@ class rocket_engine:
         self.pressure_e = 0.688
         self.burn_rate = 0  # m/s
         self.fuel_density = 0  # kg/m**3
+        # Scape gass info
+        self.heat_capacity_ratio = 1.043
+        self.gas_constant = 196.14  # J/kg*K
+        # Specific volumes
+        self.combustion_chamber_volume = 0  # m**3/kg
+        self.nozzle_volume = 0  # m**3/kg
+        self.scape_volume = 0  # m**3/kg
+        # Pressures
+        self.nozzle_pressure = 0  # Pa
+        self.scape_pressure = 101235  # Pa
 
     # Constants methods--------------------------------------------- #
     def get_atmospheric_pressure(self):
@@ -254,3 +264,52 @@ class rocket_engine:
 
     def set_fuel_density(self, fuel_density):
         self.fuel_density = fuel_density
+
+    # End fuel data------------------------------------------------------ #
+    # Scape gass info---------------------------------------------------- #
+    def get_heat_capacity_ratio(self):
+        return self.heat_capacity_ratio
+
+    def set_heat_capacity_ratio(self, heat_capacity_ratio):
+        self.heat_capacity_ratio = heat_capacity_ratio
+
+    def get_gas_constant(self):
+        return self.gas_constant
+
+    def set_gas_constant(self, gas_constant):
+        self.gas_constant = gas_constant
+
+    # End Scape gass info------------------------------------------------ #
+    # Specific volumes -------------------------------------------------- #
+    def get_combustion_chamber_volume(self):
+        return self.combustion_chamber_volume
+
+    def calc_combustion_chamber_volume(self):
+        self.combustion_chamber_volume = self.gas_constant * self.chamber_temperature_K / self.chamber_pressure_pa
+
+    def get_nozzle_volume(self):
+        return self.nozzle_volume
+
+    def calc_nozzle_volume(self):
+        self.nozzle_volume = self.combustion_chamber_volume * ((self.heat_capacity_ratio + 1) / 2) ** (
+                1 / (self.heat_capacity_ratio - 1))
+
+    def get_scape_volume(self):
+        return self.scape_volume
+
+    def calc_scape_volume(self):
+        self.scape_volume = self.combustion_chamber_volume * (self.chamber_pressure_pa / self.scape_pressure) ** (
+                1 / self.heat_capacity_ratio)
+
+    # End specific volumes ---------------------------------------------- #
+    # Pressures --------------------------------------------------------- #
+    def get_nozzle_pressure(self):
+        return self.nozzle_pressure
+
+    def calc_nozzle_pressure(self):
+        self.nozzle_pressure = self.chamber_pressure_pa * (
+                self.combustion_chamber_volume / self.nozzle_volume) ** self.heat_capacity_ratio
+
+    def get_scape_pressure(self):
+        return self.scape_pressure
+    # End pressures ----------------------------------------------------- #
