@@ -54,6 +54,30 @@ class rocket_engine:
         # Pressures
         self.nozzle_pressure = 0  # Pa
         self.scape_pressure = 101235  # Pa
+        # Temperatures
+        self.throat_temperature = 0  # K
+        self.scape_temperature = 0  # K
+        # Speeds
+        self.throat_speed = 0  # m/s
+        self.local_speed_sound_t = 0  # m/s
+        self.mach_number_t = 0
+        self.scape_speed = 0  # m/s
+        self.local_speed_sound_2 = 0  # m/s
+        self.mach_number_2 = 0
+        self.characteristic_scape_speed = 0  # m/s
+        # Performance
+        self.fuel_volume = 0  # m**3
+        self.fuel_mass = 0  # kg
+        self.total_burn_time = 0  # s
+        self.burn_area = 0  # m**2
+        self.mass_flow = 0  # kg/s
+        self.theoric_thrust_N = 0  # N
+        self.theoric_thrust_kgf = 0  # kgf
+        #self.average_expected_thrust_N = 0  # N
+        #self.average_expected_thrust_kgf = 0
+        #self.max_expected_thrust_N = 0  # N
+        #self.max_expected_thrust_kgf = 0  # kgf
+        self.theoric_specific_impulse = 0
 
     # Constants methods--------------------------------------------- #
     def get_atmospheric_pressure(self):
@@ -312,4 +336,72 @@ class rocket_engine:
 
     def get_scape_pressure(self):
         return self.scape_pressure
+
     # End pressures ----------------------------------------------------- #
+
+    # Temperatures ------------------------------------------------------ #
+    def get_throat_temperature(self):
+        return self.throat_temperature
+
+    def calc_throat_temperature(self):
+        self.throat_temperature = self.chamber_temperature_K * (
+                self.combustion_chamber_volume / self.nozzle_volume) ** (self.heat_capacity_ratio - 1)
+
+    def get_scape_temperature(self):
+        return self.scape_temperature
+
+    def calc_scape_temperature(self):
+        self.scape_temperature = self.chamber_temperature_K * (self.scape_pressure / self.chamber_pressure_pa) ** (
+                (self.heat_capacity_ratio - 1) / self.heat_capacity_ratio)
+
+    # End temperatures ----------------------------------------------- #
+    # Speeds --------------------------------------------------------- #
+    def get_throad_speed(self):
+        return self.throat_speed
+
+    def calc_throad_speed(self):
+        self.throat_speed = math.sqrt((2 * self.heat_capacity_ratio / (
+                self.heat_capacity_ratio + 1)) * self.gas_constant * self.chamber_temperature_K)
+
+    def get_local_speed_sound_t(self):
+        return self.local_speed_sound_t
+
+    def calc_local_speed_sound_1(self):
+        self.local_speed_sound_t = math.sqrt(self.heat_capacity_ratio * self.gas_constant * self.throat_temperature)
+
+    def get_mach_number_t(self):
+        return self.mach_number_t
+
+    def calc_mach_number_t(self):
+        self.mach_number_t = self.throat_speed / self.local_speed_sound_t
+
+    def get_scape_speed(self):
+        return self.scape_speed
+
+    def calc_scape_speed(self):
+        self.scape_speed = math.sqrt((2 * self.heat_capacity_ratio / (
+                self.heat_capacity_ratio - 1)) * self.gas_constant * self.chamber_temperature_K * (
+                                             1 - (self.scape_pressure / self.chamber_pressure_pa) ** (
+                                             (self.heat_capacity_ratio - 1) / self.heat_capacity_ratio)))
+
+    def get_local_speed_sound_2(self):
+        return self.local_speed_sound_2
+
+    def calc_local_speed_sound_2(self):
+        self.local_speed_sound_2 = math.sqrt(self.gas_constant * self.heat_capacity_ratio * self.scape_temperature)
+
+    def get_mach_number_2(self):
+        return self.mach_number_2
+
+    def calc_mach_number_2(self):
+        self.mach_number_2 = self.scape_speed / self.local_speed_sound_2
+
+    def get_characteristic_scape_speed(self):
+        return self.characteristic_scape_speed
+
+    def calc_characteristic_scape_speed(self):
+        self.characteristic_scape_speed = math.sqrt(self.gas_constant * self.chamber_temperature_K / (
+                    self.heat_capacity_ratio * (2 / (self.heat_capacity_ratio + 1)) ** (
+                        (self.heat_capacity_ratio + 1) / (self.heat_capacity_ratio - 1))))
+
+    # End Speeds ----------------------------------------------------- #
